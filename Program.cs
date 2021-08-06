@@ -9,9 +9,7 @@ namespace Tranzact.SearchFight
         static void Main(string[] args)
         {
             // TODO: 1.0 Find Google, Bing and maybe yahoo keys and add them to the config file.
-            // TODO: 1.1 Try app config or appsettings depending of the dependencies for the proyect and framework.
             configurationManager = new ConfigurationManager();
-            // TODO: 1.2 Find keys
             // TODO: 2.0 Create an interface for the clients.
             // TODO: 3.0 Implement the clients.
             // TODO: 4.0 Create a Comparer class than implements the clients.

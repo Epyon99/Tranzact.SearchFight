@@ -12,5 +12,7 @@ namespace Tranzact.SearchFight.Configuration
         public string ApplicationId { get; set; }
         [JsonInclude]
         public string Other { get; set; }
+        [JsonInclude]
+        public string BaseUri { get; set; }
     }
 }
