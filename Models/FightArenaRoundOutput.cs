@@ -7,18 +7,11 @@ using Tranzact.SearchFight.Models.SearchModels;
 
 namespace Tranzact.SearchFight.Models
 {
-    public class FightArenaRound
+    public class FightArenaRoundOutput
     {
         public string Word { get; set; }
-        public List<CountResult> Performance { get; set; }
-        public string ManualWinner { get; set; }
-        public string Winner
-        {
-            get
-            {
-                return Performance.Aggregate((current, next) => current.Total > next.Total ? current : next).SearchEngine;
-            }
-        }
+        public List<SearchResult> Performance { get; set; }
+        public string Winner { get; set; }
 
         public override string ToString()
         {

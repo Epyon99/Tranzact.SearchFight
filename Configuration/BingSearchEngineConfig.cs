@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tranzact.SearchFight.Configuration
 {
-    class InputParameters
+    public class BingSearchEngineConfig : SearchProviders
     {
     }
 }

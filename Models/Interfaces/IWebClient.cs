@@ -9,10 +9,10 @@ using Tranzact.SearchFight.Models.SearchModels;
 
 namespace Tranzact.SearchFight.Models.Interfaces
 {
-    public interface IRequestClient
+    public interface IWebClient
     {
-        HttpClient client { get; set; }
-        Task<CountResult> GetResultsTotal(string query);
+        HttpClient Client { get; set; }
+        Task<SearchResult> GetSearchTotal(string query);
         void Setup(SearchProviders searchProvider);
     }
 }

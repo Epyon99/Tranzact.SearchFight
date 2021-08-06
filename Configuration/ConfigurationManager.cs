@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text.Json;
+using System.Linq;
 
 namespace Tranzact.SearchFight.Configuration
 {
@@ -19,11 +20,11 @@ namespace Tranzact.SearchFight.Configuration
 
         public Configuration GetConfiguration()
         {
-            if (Config == null)
+            if (Config == null || Config.EnabledSearchProviders == null)
             {
                 throw new Exception("No configuration found");
             }
-            if (Config.SearchProviders.Length < 2)
+            if (Config.EnabledSearchProviders.Distinct().Count() < 2)
             {
                 throw new Exception("You need at least 2 search providers in order to use the application");
             }

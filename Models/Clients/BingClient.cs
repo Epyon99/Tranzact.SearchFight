@@ -9,27 +9,27 @@ using Tranzact.SearchFight.Models.SearchModels;
 
 namespace Tranzact.SearchFight.Models.Clients
 {
-    public class BingClient : IRequestClient
+    public class BingClient : IWebClient
     {
-        private readonly SearchProviders searchProvider;
+        private readonly BingSearchEngineConfig searchProvider;
         public const string SearchProviderName = "Bing";
 
-        public HttpClient client { get; set; }
+        public HttpClient Client { get; set; }
 
-        public BingClient(SearchProviders[] searchProvider)
+        public BingClient(BingSearchEngineConfig searchProvider)
         {
-            this.searchProvider = searchProvider.FirstOrDefault(g => g.Provider == SearchProviderName);
+            this.searchProvider = searchProvider;
             Setup(this.searchProvider);
         }
 
-        private CountResult DeserializeDataToResult(string query, string responseContent)
+        private SearchResult DeserializeDataToResult(string query, string responseContent)
         {
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
             var searchInfo = JsonSerializer.Deserialize<BingResponse>(responseContent, options);
-            return new CountResult()
+            return new SearchResult()
             {
                 Query = query,
                 SearchEngine = SearchProviderName,
@@ -37,13 +37,13 @@ namespace Tranzact.SearchFight.Models.Clients
             };
         }
 
-        public async Task<CountResult> GetResultsTotal(string query)
+        public async Task<SearchResult> GetSearchTotal(string query)
         {
             try
             {
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, $"?q={query}");
-                message.Headers.Add("Ocp-Apim-Subscription-Key", searchProvider.APIKey);
-                var response = await client.SendAsync(message);
+                message.Headers.Add("Ocp-Apim-Subscription-Key", searchProvider.Key);
+                var response = await Client.SendAsync(message);
                 return DeserializeDataToResult(query, await response.Content.ReadAsStringAsync());
             }
             catch (Exception ex)
@@ -54,8 +54,8 @@ namespace Tranzact.SearchFight.Models.Clients
 
         public void Setup(SearchProviders searchProvider)
         {
-            client = new HttpClient();
-            client.BaseAddress = new Uri(searchProvider.BaseUri);
+            Client = new HttpClient();
+            Client.BaseAddress = new Uri(searchProvider.URI);
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tranzact.SearchFight.Models.SearchModels
 {
-    public class CountResult
+    public class SearchResult
     {
         public long Total { get; set; }
         public string SearchEngine { get; set; }

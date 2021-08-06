@@ -9,22 +9,22 @@ using Tranzact.SearchFight.Models.SearchModels;
 
 namespace Tranzact.SearchFight.Models.Clients
 {
-    class GoogleClient : IRequestClient
+    class GoogleClient : IWebClient
     {
-        private readonly SearchProviders searchProvider;
+        private readonly GoogleSearchEngineConfig searchProvider;
         public const string SearchProviderName = "Google";
-        public GoogleClient(SearchProviders[] searchProvider)
+        public GoogleClient(GoogleSearchEngineConfig searchProvider)
         {
-            this.searchProvider = searchProvider.FirstOrDefault(g => g.Provider == SearchProviderName);
+            this.searchProvider = searchProvider;
             Setup(this.searchProvider);
         }
-        public HttpClient client { get; set; }
+        public HttpClient Client { get; set; }
 
-        public async Task<CountResult> GetResultsTotal(string query)
+        public async Task<SearchResult> GetSearchTotal(string query)
         {
             try
             {
-                var response = await client.GetAsync($"?key={searchProvider.APIKey}&cx={searchProvider.Other}&q={query}");
+                var response = await Client.GetAsync($"?key={searchProvider.Key}&cx={searchProvider.CustomEngine}&q={query}");
                 return DeserializeDataToResult(query,await response.Content.ReadAsStringAsync());
             }
             catch
@@ -35,18 +35,18 @@ namespace Tranzact.SearchFight.Models.Clients
 
         public void Setup(SearchProviders searchProvider)
         {
-            client = new HttpClient();
-            client.BaseAddress = new Uri(searchProvider.BaseUri);
+            Client = new HttpClient();
+            Client.BaseAddress = new Uri(searchProvider.URI);
         }
 
-        private CountResult DeserializeDataToResult(string query, string responseContent)
+        private SearchResult DeserializeDataToResult(string query, string responseContent)
         {
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
             var searchInfo = JsonSerializer.Deserialize<GoogleResponse>(responseContent,options);
-            return new CountResult()
+            return new SearchResult()
             {
                 Query = query,
                 SearchEngine = SearchProviderName,

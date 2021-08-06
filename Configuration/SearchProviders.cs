@@ -2,17 +2,13 @@
 
 namespace Tranzact.SearchFight.Configuration
 {
-    public class SearchProviders
+    public abstract class SearchProviders
     {
         [JsonInclude]
         public string Provider { get; set; }
         [JsonInclude]
-        public string APIKey { get; set; }
+        public string Key { get; set; }
         [JsonInclude]
-        public string ApplicationId { get; set; }
-        [JsonInclude]
-        public string Other { get; set; }
-        [JsonInclude]
-        public string BaseUri { get; set; }
+        public string URI { get; set; }
     }
 }

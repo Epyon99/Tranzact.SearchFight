@@ -8,45 +8,51 @@ using Tranzact.SearchFight.Models.Clients;
 using Tranzact.SearchFight.Models.Interfaces;
 using Tranzact.SearchFight.Models.SearchModels;
 
-namespace Tranzact.SearchFight.Models.Service
+namespace Tranzact.SearchFight.Models.Services
 {
-    public class SearchComparerService
+    public class SearchServiceArenaService
     {
         private readonly ConfigurationManager configurationManager;
-        private List<IRequestClient> requestClients;
-        public SearchComparerService(ConfigurationManager configurationManager)
+        private List<IWebClient> requestClients;
+        public SearchServiceArenaService(ConfigurationManager configurationManager)
         {
             this.configurationManager = configurationManager;
             Setup();
         }
+        public void Matches(string[] args)
+        {
+            var competition = SearchBattles(args);
+            var results = SearchResultEvaluation(competition);
+            SearchScoreboard(results);
+        }
 
         private void Setup()
         {
-            requestClients = new List<IRequestClient>();
+            requestClients = new List<IWebClient>();
             var config = configurationManager.GetConfiguration();
-            if (config.SearchProviders.Any(g => g.Provider == BingClient.SearchProviderName))
+            if (config.EnabledSearchProviders.Any(g => g == BingClient.SearchProviderName))
             {
-                requestClients.Add(new BingClient(config.SearchProviders));
+                requestClients.Add(new BingClient(config.BingSearchEngine));
             }
-            if (config.SearchProviders.Any(g => g.Provider == GoogleClient.SearchProviderName))
+            if (config.EnabledSearchProviders.Any(g => g == GoogleClient.SearchProviderName))
             {
-                requestClients.Add(new GoogleClient(config.SearchProviders));
+                requestClients.Add(new GoogleClient(config.GoogleSearchEngine));
             }
         }
 
-        public List<CountResult> Competition(string[] args)
+        private List<SearchResult> SearchBattles(string[] args)
         {
-            var taskList = new List<Task<CountResult>>();
+            var taskList = new List<Task<SearchResult>>();
             foreach (var word in args)
             {
-                var list = new List<CountResult>();
+                var list = new List<SearchResult>();
                 foreach (var client in requestClients)
                 {
-                    taskList.Add(client.GetResultsTotal(word));
+                    taskList.Add(client.GetSearchTotal(word));
                 }
             }
             Task.WaitAll(taskList.ToArray());
-            List<CountResult> competitionData = new List<CountResult>();
+            List<SearchResult> competitionData = new List<SearchResult>();
             foreach (var z in taskList)
             {
                 competitionData.Add(z.Result);
@@ -54,34 +60,27 @@ namespace Tranzact.SearchFight.Models.Service
             return competitionData;
         }
 
-        public void Matches(string[] args)
+        private List<FightArenaRoundOutput> SearchResultEvaluation(List<SearchResult> results)
         {
-            var competition = Competition(args);
-            var results = Judges(competition);
-            DisplayScoreboard(results);
-        }
-
-        public List<FightArenaRound> Judges(List<CountResult> results)
-        {
-            var arenaResults = new List<FightArenaRound>();
+            var arenaResults = new List<FightArenaRoundOutput>();
             foreach (var row in results.GroupBy(g => g.Query).ToList())
             {
-                var result = new FightArenaRound()
+                var result = new FightArenaRoundOutput()
                 {
                     Word = row.Key,
-                    Performance = new List<CountResult>()
+                    Performance = new List<SearchResult>()
                 };
                 foreach (var column in row)
                 {
                     result.Performance.Add(column);
                 }
-                result.ManualWinner = result.Performance.Aggregate((current, next) => current.Total > next.Total ? current : next).SearchEngine;
+                result.Winner = result.Performance.Aggregate((current, next) => current.Total > next.Total ? current : next).SearchEngine;
                 arenaResults.Add(result);
             }
             return arenaResults;
         }
 
-        public void DisplayScoreboard(List<FightArenaRound> arenaResults)
+        private void SearchScoreboard(List<FightArenaRoundOutput> arenaResults)
         {
             // Display Scoreboard
             foreach (var round in arenaResults)
@@ -102,8 +101,8 @@ namespace Tranzact.SearchFight.Models.Service
             }
 
             // Display the contestant with the most victories
-            var champion = groupWinners.OrderByDescending(g => g.Count()).First();
-            Console.WriteLine($"Total Winner: {champion.Key}");
+            var champion = groupWinners.OrderByDescending(g => g.Count()).FirstOrDefault();
+            Console.WriteLine($"Total Winner: {champion?.Key}");
         }
     }
 }
