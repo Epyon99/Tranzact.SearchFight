@@ -7,6 +7,7 @@ namespace Tranzact.SearchFight
         static void Main(string[] args)
         {
             // TODO: 0.0 Create Repo and general To-dos
+            // TODO: 0.1 Add a gitignore for vs2019.
             // TODO: 1.0 Find Google, Bing and maybe yahoo keys and add them to the config file.
             // TODO: 2.0 Create an interface for the clients.
             // TODO: 3.0 Implement the clients.
