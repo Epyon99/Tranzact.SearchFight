@@ -12,7 +12,7 @@ namespace Tranzact.SearchFight.Models.Clients
     class GoogleClient : IRequestClient
     {
         private readonly SearchProviders searchProvider;
-        private const string SearchProviderName = "Google";
+        public const string SearchProviderName = "Google";
         public GoogleClient(SearchProviders[] searchProvider)
         {
             this.searchProvider = searchProvider.FirstOrDefault(g => g.Provider == SearchProviderName);

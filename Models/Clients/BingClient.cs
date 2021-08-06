@@ -12,7 +12,7 @@ namespace Tranzact.SearchFight.Models.Clients
     public class BingClient : IRequestClient
     {
         private readonly SearchProviders searchProvider;
-        private const string SearchProviderName = "Bing";
+        public const string SearchProviderName = "Bing";
 
         public HttpClient client { get; set; }
 

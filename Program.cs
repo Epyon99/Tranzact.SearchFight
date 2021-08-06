@@ -3,6 +3,7 @@ using System.Linq;
 using Tranzact.SearchFight.Configuration;
 using Tranzact.SearchFight.Models.Clients;
 using Tranzact.SearchFight.Models.Interfaces;
+using Tranzact.SearchFight.Models.Service;
 
 namespace Tranzact.SearchFight
 {
@@ -12,12 +13,9 @@ namespace Tranzact.SearchFight
         static void Main(string[] args)
         {
             configurationManager = new ConfigurationManager();
-            IRequestClient googleClient = new GoogleClient(configurationManager.GetConfiguration().SearchProviders);
-            var result = googleClient.GetResultsTotal("java");
-            IRequestClient bingClient = new BingClient(configurationManager.GetConfiguration().SearchProviders);
-            var result2 = bingClient.GetResultsTotal("java");
-            result.Wait();
-            result2.Wait();
+            SearchComparerService scs = new SearchComparerService(configurationManager);
+            string[] param = { "java", "net", "python" };
+            scs.Matches(param);
             // TODO: 4.0 Create a Comparer class than implements the clients.
             // TODO: 4.1 Implement the clients as a list according to the existing in the config file.
             // TODO: 5.0 Create the UI display methods.
