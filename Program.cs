@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Linq;
 using Tranzact.SearchFight.Configuration;
+using Tranzact.SearchFight.Models.Clients;
+using Tranzact.SearchFight.Models.Interfaces;
 
 namespace Tranzact.SearchFight
 {
@@ -8,8 +11,13 @@ namespace Tranzact.SearchFight
         static ConfigurationManager configurationManager; 
         static void Main(string[] args)
         {
-            // TODO: 1.0 Find Google, Bing and maybe yahoo keys and add them to the config file.
             configurationManager = new ConfigurationManager();
+            IRequestClient googleClient = new GoogleClient(configurationManager.GetConfiguration().SearchProviders);
+            var result = googleClient.GetResultsTotal("java");
+            IRequestClient bingClient = new BingClient(configurationManager.GetConfiguration().SearchProviders);
+            var result2 = bingClient.GetResultsTotal("java");
+            result.Wait();
+            result2.Wait();
             // TODO: 2.0 Create an interface for the clients.
             // TODO: 3.0 Implement the clients.
             // TODO: 4.0 Create a Comparer class than implements the clients.
