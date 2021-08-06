@@ -18,8 +18,6 @@ namespace Tranzact.SearchFight
             var result2 = bingClient.GetResultsTotal("java");
             result.Wait();
             result2.Wait();
-            // TODO: 2.0 Create an interface for the clients.
-            // TODO: 3.0 Implement the clients.
             // TODO: 4.0 Create a Comparer class than implements the clients.
             // TODO: 4.1 Implement the clients as a list according to the existing in the config file.
             // TODO: 5.0 Create the UI display methods.
