@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -14,15 +13,15 @@ namespace Tranzact.SearchFight.Models.Clients
         private readonly BingSearchEngineConfig searchProvider;
         public const string SearchProviderName = "Bing";
 
-        public HttpClient Client { get; set; }
+        public IHttpClient Client { get; set; }
 
-        public BingClient(BingSearchEngineConfig searchProvider)
+        public BingClient(BingSearchEngineConfig searchProvider, IHttpClient client)
         {
             this.searchProvider = searchProvider;
-            Setup(this.searchProvider);
+            this.Client = client;
         }
 
-        private SearchResult DeserializeDataToResult(string query, string responseContent)
+        public SearchResult DeserializeDataToResult(string query, string responseContent)
         {
             var options = new JsonSerializerOptions
             {
@@ -41,21 +40,15 @@ namespace Tranzact.SearchFight.Models.Clients
         {
             try
             {
-                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, $"?q={query}");
+                HttpRequestMessage message = new(HttpMethod.Get, $"?q={query}");
                 message.Headers.Add("Ocp-Apim-Subscription-Key", searchProvider.Key);
                 var response = await Client.SendAsync(message);
                 return DeserializeDataToResult(query, await response.Content.ReadAsStringAsync());
             }
-            catch (Exception ex)
+            catch
             {
                 throw new Exception($"{SearchProviderName} API client failed to respond or extract data");
             }
-        }
-
-        public void Setup(SearchProviders searchProvider)
-        {
-            Client = new HttpClient();
-            Client.BaseAddress = new Uri(searchProvider.URI);
         }
     }
 }

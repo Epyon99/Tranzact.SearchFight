@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tranzact.SearchFight.Configuration;
@@ -8,15 +8,16 @@ using Tranzact.SearchFight.Models.Services;
 
 namespace Tranzact.SearchFight
 {
-    class Program
+    public class Program
     {
-        static ConfigurationManager configurationManager; 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             try
             {
-                configurationManager = new ConfigurationManager();
-                var task = Task.Run(() => new SearchServiceArenaService(configurationManager).Matches(args));
+                var task = Task.Run(() =>
+                    new SearchServiceArenaService(CreateServiceClients(CreateConfigurationmanager()), CreateDisplayService())
+                        .Matches(args)
+                    );
                 task.Wait();
             }
             catch
@@ -25,7 +26,40 @@ namespace Tranzact.SearchFight
             }
             // TODO: 8.0 Launch the comparer object from the main as an anonymous method.
             // TODO: 9.0 Check if folder structure makes sense, and refactor if needed.
-            // TODO: 1.0 Improve the general error management, and add readme.txt or readme.md
+            // TODO: 10.0 Improve the general error management, and add readme.txt or readme.md
+            // TODO: 11 add unit test and coverage for main components.
         }
+
+        private static List<IWebClient> CreateServiceClients(ConfigurationManager configurationManager)
+        {
+            var requestClients = new List<IWebClient>();
+            var config = configurationManager.GetConfiguration();
+            if (config.EnabledSearchProviders.Any(g => g == BingClient.SearchProviderName))
+            {
+                requestClients.Add(new BingClient(config.BingSearchEngine, CreateHttpClient(config.BingSearchEngine.URI)));
+            }
+            if (config.EnabledSearchProviders.Any(g => g == GoogleClient.SearchProviderName))
+            {
+                requestClients.Add(new GoogleClient(config.GoogleSearchEngine, CreateHttpClient(config.BingSearchEngine.URI)));
+            }
+            return requestClients;
+        }
+
+        private static ConfigurationManager CreateConfigurationmanager()
+        {
+            return new ConfigurationManager();
+        }
+
+        private static DisplayService CreateDisplayService()
+        {
+            return new DisplayService();
+        }
+
+        private static IHttpClient CreateHttpClient(string url)
+        {
+            return new BaseHttpClient(url);
+        }
+
+
     }
 }

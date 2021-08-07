@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -13,19 +12,20 @@ namespace Tranzact.SearchFight.Models.Clients
     {
         private readonly GoogleSearchEngineConfig searchProvider;
         public const string SearchProviderName = "Google";
-        public GoogleClient(GoogleSearchEngineConfig searchProvider)
+        public IHttpClient Client { get; set; }
+
+        public GoogleClient(GoogleSearchEngineConfig searchProvider, IHttpClient client)
         {
             this.searchProvider = searchProvider;
-            Setup(this.searchProvider);
+            this.Client = client;
         }
-        public HttpClient Client { get; set; }
 
         public async Task<SearchResult> GetSearchTotal(string query)
         {
             try
             {
                 var response = await Client.GetAsync($"?key={searchProvider.Key}&cx={searchProvider.CustomEngine}&q={query}");
-                return DeserializeDataToResult(query,await response.Content.ReadAsStringAsync());
+                return DeserializeDataToResult(query, await response.Content.ReadAsStringAsync());
             }
             catch
             {
@@ -33,19 +33,13 @@ namespace Tranzact.SearchFight.Models.Clients
             }
         }
 
-        public void Setup(SearchProviders searchProvider)
-        {
-            Client = new HttpClient();
-            Client.BaseAddress = new Uri(searchProvider.URI);
-        }
-
-        private SearchResult DeserializeDataToResult(string query, string responseContent)
+        public SearchResult DeserializeDataToResult(string query, string responseContent)
         {
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
-            var searchInfo = JsonSerializer.Deserialize<GoogleResponse>(responseContent,options);
+            var searchInfo = JsonSerializer.Deserialize<GoogleResponse>(responseContent, options);
             return new SearchResult()
             {
                 Query = query,

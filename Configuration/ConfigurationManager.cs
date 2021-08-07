@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Text.Json;
 using System.Linq;
+using System.Text.Json;
 
 namespace Tranzact.SearchFight.Configuration
 {

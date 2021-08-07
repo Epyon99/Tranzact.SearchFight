@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Tranzact.SearchFight.Models.SearchModels;
 
 namespace Tranzact.SearchFight.Models
@@ -16,11 +12,11 @@ namespace Tranzact.SearchFight.Models
         public override string ToString()
         {
             var output = string.Empty;
-            foreach(var data in Performance)
+            foreach (var data in Performance)
             {
                 output += $"{data.SearchEngine}:{data.Total} ";
             }
-            return $"{Word} {output}"; 
+            return $"{Word} {output}";
         }
-}
+    }
 }
