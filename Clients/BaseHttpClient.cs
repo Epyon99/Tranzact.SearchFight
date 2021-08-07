@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tranzact.SearchFight.Models.Interfaces;
 
-namespace Tranzact.SearchFight.Models.Clients
+namespace Tranzact.SearchFight.Clients
 {
     public class BaseHttpClient : IHttpClient
     {

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Tranzact.SearchFight.Models;
 using Tranzact.SearchFight.Models.Interfaces;
 
-namespace Tranzact.SearchFight.Models.Services
+namespace Tranzact.SearchFight.Services
 {
     public class DisplayService : IDisplayData
     {

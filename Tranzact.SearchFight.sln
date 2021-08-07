@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31410.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tranzact.SearchFight", "Tranzact.SearchFight.csproj", "{4E228AFD-D2B1-4C4C-9A37-EBE230963FDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tranzact.SearchFight.Test", "..\Tranzact.SearchFight.Test\Tranzact.SearchFight.Test.csproj", "{1691C130-AABF-40E3-88B7-4632AEDE7AF6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tranzact.SearchFight.Test", ".\Tranzact.SearchFight.Test\Tranzact.SearchFight.Test.csproj", "{1691C130-AABF-40E3-88B7-4632AEDE7AF6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

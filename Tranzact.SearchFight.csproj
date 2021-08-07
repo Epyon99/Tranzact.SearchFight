@@ -3,7 +3,14 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Tranzact.SearchFight.Test\**" />
+    <EmbeddedResource Remove="Tranzact.SearchFight.Test\**" />
+    <None Remove="Tranzact.SearchFight.Test\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">

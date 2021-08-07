@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Tranzact.SearchFight.Clients;
 using Tranzact.SearchFight.Configuration;
-using Tranzact.SearchFight.Models.Clients;
 using Tranzact.SearchFight.Models.Interfaces;
 using Tranzact.SearchFight.Models.Services;
+using Tranzact.SearchFight.Services;
 
 namespace Tranzact.SearchFight
 {
@@ -24,7 +25,6 @@ namespace Tranzact.SearchFight
             {
                 throw;
             }
-            // TODO: 8.0 Launch the comparer object from the main as an anonymous method.
             // TODO: 9.0 Check if folder structure makes sense, and refactor if needed.
             // TODO: 10.0 Improve the general error management, and add readme.txt or readme.md
             // TODO: 11 add unit test and coverage for main components.
@@ -40,14 +40,14 @@ namespace Tranzact.SearchFight
             }
             if (config.EnabledSearchProviders.Any(g => g == GoogleClient.SearchProviderName))
             {
-                requestClients.Add(new GoogleClient(config.GoogleSearchEngine, CreateHttpClient(config.BingSearchEngine.URI)));
+                requestClients.Add(new GoogleClient(config.GoogleSearchEngine, CreateHttpClient(config.GoogleSearchEngine.URI)));
             }
             return requestClients;
         }
 
         private static ConfigurationManager CreateConfigurationmanager()
         {
-            return new ConfigurationManager();
+            return new ConfigurationManager(ConfigurationManager.ConfigurationFileName);
         }
 
         private static DisplayService CreateDisplayService()

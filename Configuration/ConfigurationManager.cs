@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using Tranzact.SearchFight.Common.Exceptions;
 
 namespace Tranzact.SearchFight.Configuration
 {
@@ -10,11 +11,11 @@ namespace Tranzact.SearchFight.Configuration
         public const string ConfigurationFileName = "appsettings.json";
         private readonly Configuration Config;
 
-        public ConfigurationManager()
+        public ConfigurationManager(string filepath)
         {
-            if (File.Exists(ConfigurationFileName))
+            if (!string.IsNullOrEmpty(filepath) && File.Exists(filepath))
             {
-                Config = JsonSerializer.Deserialize<Configuration>(File.ReadAllText(ConfigurationFileName));
+                Config = JsonSerializer.Deserialize<Configuration>(File.ReadAllText(filepath));
             }
         }
 
@@ -22,11 +23,11 @@ namespace Tranzact.SearchFight.Configuration
         {
             if (Config == null || Config.EnabledSearchProviders == null)
             {
-                throw new Exception("No configuration found");
+                throw new NoConfigurationFileException("No configuration found");
             }
             if (Config.EnabledSearchProviders.Distinct().Count() < 2)
             {
-                throw new Exception("You need at least 2 search providers in order to use the application");
+                throw new LessThanTwoEnginesException("You need at least 2 search providers in order to use the application");
             }
             return Config;
         }

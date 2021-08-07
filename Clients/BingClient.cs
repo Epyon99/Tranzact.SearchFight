@@ -2,11 +2,12 @@
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Tranzact.SearchFight.Common.Exceptions;
 using Tranzact.SearchFight.Configuration;
 using Tranzact.SearchFight.Models.Interfaces;
 using Tranzact.SearchFight.Models.SearchModels;
 
-namespace Tranzact.SearchFight.Models.Clients
+namespace Tranzact.SearchFight.Clients
 {
     public class BingClient : IWebClient
     {
@@ -23,17 +24,24 @@ namespace Tranzact.SearchFight.Models.Clients
 
         public SearchResult DeserializeDataToResult(string query, string responseContent)
         {
-            var options = new JsonSerializerOptions
+            try
             {
-                PropertyNameCaseInsensitive = true
-            };
-            var searchInfo = JsonSerializer.Deserialize<BingResponse>(responseContent, options);
-            return new SearchResult()
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                var searchInfo = JsonSerializer.Deserialize<BingResponse>(responseContent, options);
+                return new SearchResult()
+                {
+                    Query = query,
+                    SearchEngine = SearchProviderName,
+                    Total = searchInfo.WebPages.TotalEstimatedMatches
+                };
+            }
+            catch
             {
-                Query = query,
-                SearchEngine = SearchProviderName,
-                Total = searchInfo.WebPages.TotalEstimatedMatches
-            };
+                throw new APIJsonParsingException($"There was a problem parsing the Json data for {SearchProviderName}");
+            }
         }
 
         public async Task<SearchResult> GetSearchTotal(string query)
@@ -45,9 +53,13 @@ namespace Tranzact.SearchFight.Models.Clients
                 var response = await Client.SendAsync(message);
                 return DeserializeDataToResult(query, await response.Content.ReadAsStringAsync());
             }
+            catch (APIJsonParsingException)
+            {
+                throw;
+            }
             catch
             {
-                throw new Exception($"{SearchProviderName} API client failed to respond or extract data");
+                throw new NoConnectivityException($"{SearchProviderName} API client failed to respond or extract data");
             }
         }
     }
