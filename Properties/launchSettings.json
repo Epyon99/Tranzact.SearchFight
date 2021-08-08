@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Tranzact.SearchFight": {
-      "commandName": "Project",
-      "commandLineArgs": "\"hola mundo\" python  \"javascript\""
-    }
-  }
-}
