@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tranzact.SearchFight.Clients;
@@ -18,9 +19,6 @@ namespace Tranzact.SearchFight
                     .Matches(args)
                 );
             task.Wait();
-            // 10.1 Write the details in the readme
-            // 11.1 Cleanup UnitTest and abstraction, and remove duplicates.
-            // 12.0 Review syntax and code coverage manually
         }
 
         private static List<IWebClient> CreateServiceClients(ConfigurationManager configurationManager)

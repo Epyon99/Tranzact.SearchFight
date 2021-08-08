@@ -20,33 +20,29 @@ namespace Tranzact.SearchFight.Test.Services
     [TestClass]
     public class SearchServiceArenaServiceTest
     {
-        [TestMethod]
-        public void Test_Matches()
+        readonly string[] inputWords = { ".net" };
+        readonly List<IWebClient> mockRequestClients = new()
         {
-            List<IWebClient> mockRequestClients = new()
+            new GoogleClient(new Configuration.GoogleSearchEngineConfig()
             {
-                new GoogleClient(new Configuration.GoogleSearchEngineConfig(){
-                    CustomEngine = "something",
-                    Key = "something",
-                    Provider = "Google",
-                    URI = "something"
-                    },new MockHttpClient()),
-                new BingClient(new Configuration.BingSearchEngineConfig(){
-                    Key = "something",
-                    Provider = "Bing",
-                    URI = "something"
-                },new MockHttpClient())
-            };
-
-            IDisplayData displayService = new DisplayService();
-            
-            string[] inputWords = { ".net" };
-            List<FightArenaRoundOutput> fightDataOutput = new()
+                CustomEngine = "something",
+                Key = "something",
+                Provider = "Google",
+                URI = "something"
+            }, new MockHttpClient()),
+            new BingClient(new Configuration.BingSearchEngineConfig()
             {
-                new FightArenaRoundOutput()
-                {
-                    Word = ".net",
-                    Performance = new List<SearchResult>()
+                Key = "something",
+                Provider = "Bing",
+                URI = "something"
+            }, new MockHttpClient())
+        };
+        readonly List<FightArenaRoundOutput> fightDataOutput = new()
+        {
+            new FightArenaRoundOutput()
+            {
+                Word = ".net",
+                Performance = new List<SearchResult>()
                     {
                         new SearchResult()
                         {
@@ -61,13 +57,17 @@ namespace Tranzact.SearchFight.Test.Services
                             Total = 120
                         }
                     },
-                    Winner = "Google"
-                }
-            };
+                Winner = "Google"
+            }
+        };
 
-            SearchServiceArenaService service = new(mockRequestClients,displayService);
+        [TestMethod]
+        public void Test_Matches()
+        {
+            IDisplayData displayService = new DisplayService();
+            SearchServiceArenaService service = new(mockRequestClients, displayService);
+
             var result = service.Matches(inputWords);
-
 
             Assert.AreEqual(fightDataOutput[0].Winner, result[0].Winner);
             Assert.AreEqual(fightDataOutput[0].Performance.Count, result[0].Performance.Count);
@@ -79,17 +79,11 @@ namespace Tranzact.SearchFight.Test.Services
         [ExpectedException(typeof(UnsupportedEngine))]
         public void Test_Matches_NoEngines()
         {
-            List<IWebClient> mockRequestClients = new()
-            {
-            };
-
+            List<IWebClient> mockRequestClients = new() { };
             IDisplayData displayService = new DisplayService();
-
-            string[] inputWords = { ".net" };
-
             SearchServiceArenaService service = new(mockRequestClients, displayService);
-            service.Matches(inputWords);
 
+            service.Matches(inputWords);
         }
     }
 }

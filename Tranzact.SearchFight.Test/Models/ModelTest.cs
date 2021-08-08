@@ -22,8 +22,7 @@ namespace Tranzact.SearchFight.Test.Models
             SearchEngine = SearchEngine,
             Total = Total
         };
-
-        List<FightArenaRoundOutput> fightDataOutput = new()
+        readonly List<FightArenaRoundOutput> fightDataOutput = new()
         {
             new FightArenaRoundOutput()
             {
@@ -50,8 +49,10 @@ namespace Tranzact.SearchFight.Test.Models
         [TestMethod]
         public void Test_FightArenaRoundOutput_ToString()
         {
-            Regex regex = new($"Search Engine: \\w | Query \\w | Total \\d+");
-            var result = regex.IsMatch(expectedSearchResult.ToString());
+            Regex regex = new($"\\w \\w:\\w \\w:\\w");
+
+            var result = regex.IsMatch(fightDataOutput.ToString());
+
             Assert.AreEqual(true, result);
         }
 
@@ -59,7 +60,9 @@ namespace Tranzact.SearchFight.Test.Models
         public void Test_SearchResult_ToString()
         {
             Regex regex = new($"Search Engine: \\w | Query \\w | Total \\d+");
+
             var result = regex.IsMatch(expectedSearchResult.ToString());
+
             Assert.AreEqual(true, result);
         }
     }

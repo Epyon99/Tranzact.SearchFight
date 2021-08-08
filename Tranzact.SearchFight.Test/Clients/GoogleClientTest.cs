@@ -36,9 +36,7 @@ namespace Tranzact.SearchFight.Test.Clients
         {
             
             var httpclient = new MockHttpClient();
-
-            GoogleClient client = new(config,httpclient);
-            
+            GoogleClient client = new(config,httpclient);         
             
             var result = client.GetSearchTotal(RandomText);
             result.Wait();
@@ -52,8 +50,6 @@ namespace Tranzact.SearchFight.Test.Clients
         public void Test_DeserializeDataToResult()
         {
             var httpclient = new MockHttpClient();
-
-
             GoogleClient client = new(config, httpclient);
 
             var message = httpclient.GetAsync(RandomText);

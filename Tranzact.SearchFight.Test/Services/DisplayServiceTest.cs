@@ -50,11 +50,10 @@ namespace Tranzact.SearchFight.Test.Services
             string expectedOutputRegex = @".net Bing:\d+ Google:\d+ 
 Google winner: .net
 Total Winner: Google";
-
             DisplayService service = new();
-
             Regex rx = new(expectedOutputRegex, RegexOptions.IgnoreCase);
             var result = false;
+
             using (var sw = new StringWriter())
             {
                 Console.SetOut(sw);

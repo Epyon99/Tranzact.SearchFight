@@ -34,16 +34,13 @@ namespace Tranzact.SearchFight.Test.Clients
         [TestMethod]
         public void Test_GetSearchTotal()
         {
+
             var httpclient = new MockHttpClient();
-
-            
-
             BingClient client = new(config, httpclient);
-
-
+            
             var result = client.GetSearchTotal(RandomText);
-
             result.Wait();
+
             Assert.AreEqual(expectedSearchResult.Query, result.Result.Query);
             Assert.AreEqual(expectedSearchResult.SearchEngine, result.Result.SearchEngine);
             Assert.AreEqual(expectedSearchResult.Total, result.Result.Total);
@@ -53,7 +50,6 @@ namespace Tranzact.SearchFight.Test.Clients
         public void Test_DeserializeDataToResult()
         {
             var httpclient = new MockHttpClient();
-
             BingClient client = new(config, httpclient);
 
             var message = httpclient.SendAsync(new System.Net.Http.HttpRequestMessage());

@@ -17,7 +17,9 @@ namespace Tranzact.SearchFight.Test
         {
             string filePath = ".\\Resources\\appsettings.json";
             ConfigurationManager configurationManager = new(filePath);
+
             var result = configurationManager.GetConfiguration();
+
             Assert.IsNotNull(result);
             Assert.AreEqual("Bing", result.BingSearchEngine.Provider);
             Assert.AreEqual("test", result.BingSearchEngine.Key);
@@ -33,7 +35,9 @@ namespace Tranzact.SearchFight.Test
         public void TestConfigurationManager_GetConfigurationNoFile()
         {
             string filePath = string.Empty;
+
             ConfigurationManager configurationManager = new(filePath);
+
             configurationManager.GetConfiguration();
         }
 
@@ -42,7 +46,9 @@ namespace Tranzact.SearchFight.Test
         public void TestConfigurationManager_GetConfigurationLessEngines()
         {
             string filePath = ".\\Resources\\appsettings-noengine.json";
+
             ConfigurationManager configurationManager = new(filePath);
+
             configurationManager.GetConfiguration();
         }
     }
