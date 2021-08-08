@@ -7,8 +7,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Tranzact.SearchFight.Clients;
+using Tranzact.SearchFight.Common.Exceptions;
 using Tranzact.SearchFight.Models;
 using Tranzact.SearchFight.Models.Interfaces;
+using Tranzact.SearchFight.Models.SearchModels;
 using Tranzact.SearchFight.Models.Services;
 using Tranzact.SearchFight.Services;
 using Tranzact.SearchFight.Test.Mock;
@@ -21,7 +23,7 @@ namespace Tranzact.SearchFight.Test.Services
         [TestMethod]
         public void Test_Matches()
         {
-            List<IWebClient> mockRequestClients = new List<IWebClient>()
+            List<IWebClient> mockRequestClients = new()
             {
                 new GoogleClient(new Configuration.GoogleSearchEngineConfig(){
                     CustomEngine = "something",
@@ -39,20 +41,20 @@ namespace Tranzact.SearchFight.Test.Services
             IDisplayData displayService = new DisplayService();
             
             string[] inputWords = { ".net" };
-            List<FightArenaRoundOutput> fightDataOutput = new List<FightArenaRoundOutput>()
+            List<FightArenaRoundOutput> fightDataOutput = new()
             {
                 new FightArenaRoundOutput()
                 {
                     Word = ".net",
-                    Performance = new List<Models.SearchModels.SearchResult>()
+                    Performance = new List<SearchResult>()
                     {
-                        new Models.SearchModels.SearchResult()
+                        new SearchResult()
                         {
                             Query = ".net",
                             SearchEngine = "Google",
                             Total = 125
                         },
-                        new Models.SearchModels.SearchResult()
+                        new SearchResult()
                         {
                             Query = ".net",
                             SearchEngine = "Bing",
@@ -63,13 +65,31 @@ namespace Tranzact.SearchFight.Test.Services
                 }
             };
 
-            SearchServiceArenaService service = new SearchServiceArenaService(mockRequestClients,displayService);
+            SearchServiceArenaService service = new(mockRequestClients,displayService);
             var result = service.Matches(inputWords);
 
 
             Assert.AreEqual(fightDataOutput[0].Winner, result[0].Winner);
-            Assert.AreEqual(fightDataOutput[0].Performance.Count(), result[0].Performance.Count());
+            Assert.AreEqual(fightDataOutput[0].Performance.Count, result[0].Performance.Count);
             Assert.AreEqual(fightDataOutput[0].Word, result[0].Word);
+        }
+
+
+        [TestMethod]
+        [ExpectedException(typeof(UnsupportedEngine))]
+        public void Test_Matches_NoEngines()
+        {
+            List<IWebClient> mockRequestClients = new()
+            {
+            };
+
+            IDisplayData displayService = new DisplayService();
+
+            string[] inputWords = { ".net" };
+
+            SearchServiceArenaService service = new(mockRequestClients, displayService);
+            service.Matches(inputWords);
+
         }
     }
 }

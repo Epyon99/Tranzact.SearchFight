@@ -30,7 +30,10 @@ namespace Tranzact.SearchFight.Services
 
             // Display the contestant with the most victories
             var champion = groupWinners.OrderByDescending(g => g.Count()).FirstOrDefault();
-            Console.WriteLine($"Total Winner: {champion?.Key}");
+            if (champion != null)
+            {
+                Console.WriteLine($"Total Winner: {champion.Key}");
+            }
         }
     }
 }

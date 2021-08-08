@@ -12,18 +12,18 @@ using Tranzact.SearchFight.Test.Mock;
 namespace Tranzact.SearchFight.Test.Clients
 {
     [TestClass]
-    public class BingClientTest
+    public class GoogleClientTest
     {
-        private readonly BingSearchEngineConfig config = new()
+
+        private static readonly string SearchEngine = "Google";
+        private static readonly long Total = 125;
+        private static readonly string RandomText = "Something";
+        private readonly GoogleSearchEngineConfig config = new()
         {
             Key = RandomText,
             Provider = SearchEngine,
             URI = RandomText
         };
-
-        private static readonly string SearchEngine = "Bing";
-        private static readonly long Total = 120;
-        private static readonly string RandomText = "Something";
         readonly SearchResult expectedSearchResult = new()
         {
             Query = RandomText,
@@ -34,16 +34,15 @@ namespace Tranzact.SearchFight.Test.Clients
         [TestMethod]
         public void Test_GetSearchTotal()
         {
+            
             var httpclient = new MockHttpClient();
 
+            GoogleClient client = new(config,httpclient);
             
-
-            BingClient client = new(config, httpclient);
-
-
+            
             var result = client.GetSearchTotal(RandomText);
-
             result.Wait();
+
             Assert.AreEqual(expectedSearchResult.Query, result.Result.Query);
             Assert.AreEqual(expectedSearchResult.SearchEngine, result.Result.SearchEngine);
             Assert.AreEqual(expectedSearchResult.Total, result.Result.Total);
@@ -54,13 +53,14 @@ namespace Tranzact.SearchFight.Test.Clients
         {
             var httpclient = new MockHttpClient();
 
-            BingClient client = new(config, httpclient);
 
-            var message = httpclient.SendAsync(new System.Net.Http.HttpRequestMessage());
+            GoogleClient client = new(config, httpclient);
+
+            var message = httpclient.GetAsync(RandomText);
             message.Wait();
             var jsonResponse = message.Result.Content.ReadAsStringAsync();
             jsonResponse.Wait();
-            var result = client.DeserializeDataToResult(RandomText, jsonResponse.Result);
+            var result = client.DeserializeDataToResult(RandomText,jsonResponse.Result);
 
             Assert.AreEqual(expectedSearchResult.Query, result.Query);
             Assert.AreEqual(expectedSearchResult.SearchEngine, result.SearchEngine);
@@ -73,19 +73,18 @@ namespace Tranzact.SearchFight.Test.Clients
         {
             var httpclient = new MockHttpClient();
 
-            BingClient client = new(config, httpclient);
+            GoogleClient client = new(config, httpclient);
 
-            client.DeserializeDataToResult(RandomText, string.Empty);
-
+            client.DeserializeDataToResult(RandomText,string.Empty);
         }
 
         [TestMethod]
         [ExpectedException(typeof(APIJsonParsingException))]
         public async Task Test_GetSearchResult_BadJson()
         {
-            var httpclient = new MockHttpBingClient();
+            var httpclient = new MockHttpGoogleClient();
 
-            BingClient client = new(config, httpclient);
+            GoogleClient client = new(config, httpclient);
 
             await client.GetSearchTotal(RandomText);
         }
@@ -93,8 +92,8 @@ namespace Tranzact.SearchFight.Test.Clients
         [TestMethod]
         [ExpectedException(typeof(NoConnectivityException))]
         public async Task Test_DeserializeDataToResult_NoClient()
-        {
-            BingClient client = new(config, null);
+        {            
+            GoogleClient client = new(config, null);
             await client.GetSearchTotal(RandomText);
         }
     }

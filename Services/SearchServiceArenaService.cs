@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Tranzact.SearchFight.Common.Exceptions;
 using Tranzact.SearchFight.Models.Interfaces;
 using Tranzact.SearchFight.Models.SearchModels;
 
@@ -28,6 +29,12 @@ namespace Tranzact.SearchFight.Models.Services
         private List<SearchResult> SearchBattles(string[] args)
         {
             var taskList = new List<Task<SearchResult>>();
+
+            if (requestClients.Count < 2)
+            {
+                throw new UnsupportedEngine("At least two supported engines must be activated to use the application, check the readme file");
+            }
+
             foreach (var word in args)
             {
                 var list = new List<SearchResult>();

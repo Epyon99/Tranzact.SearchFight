@@ -11,7 +11,7 @@ namespace Tranzact.SearchFight.Test.Mock
 {
     public class MockHttpClient : IHttpClient
     {
-        private GoogleResponse googleResponse = new GoogleResponse()
+        private readonly GoogleResponse googleResponse = new()
         {
             Kind = "random",
             SearchInformation = new GoogleSearchInformation()
@@ -22,7 +22,7 @@ namespace Tranzact.SearchFight.Test.Mock
                 TotalResults = "125"
             }
         };
-        private BingResponse bingResponse = new BingResponse()
+        private readonly BingResponse bingResponse = new()
         {
             WebPages = new BingWebPages()
             {
@@ -34,8 +34,8 @@ namespace Tranzact.SearchFight.Test.Mock
         {
             return Task.Run(() =>
             {
-                StringContent stringContent = new StringContent(System.Text.Json.JsonSerializer.Serialize(googleResponse));
-                HttpResponseMessage message = new HttpResponseMessage()
+                StringContent stringContent = new(System.Text.Json.JsonSerializer.Serialize(googleResponse));
+                HttpResponseMessage message = new()
                 {
                     Content = stringContent
                 };
@@ -47,8 +47,8 @@ namespace Tranzact.SearchFight.Test.Mock
         {
             return Task.Run(() =>
             {
-                StringContent stringContent = new StringContent(System.Text.Json.JsonSerializer.Serialize(bingResponse));
-                HttpResponseMessage message = new HttpResponseMessage()
+                StringContent stringContent = new(System.Text.Json.JsonSerializer.Serialize(bingResponse));
+                HttpResponseMessage message = new()
                 {
                     Content = stringContent
                 };

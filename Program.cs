@@ -13,21 +13,14 @@ namespace Tranzact.SearchFight
     {
         public static void Main(string[] args)
         {
-            try
-            {
-                var task = Task.Run(() =>
-                    new SearchServiceArenaService(CreateServiceClients(CreateConfigurationmanager()), CreateDisplayService())
-                        .Matches(args)
-                    );
-                task.Wait();
-            }
-            catch
-            {
-                throw;
-            }
-            // TODO: 9.0 Check if folder structure makes sense, and refactor if needed.
-            // TODO: 10.0 Improve the general error management, and add readme.txt or readme.md
-            // TODO: 11 add unit test and coverage for main components.
+            var task = Task.Run(() =>
+                new SearchServiceArenaService(CreateServiceClients(CreateConfigurationmanager()), CreateDisplayService())
+                    .Matches(args)
+                );
+            task.Wait();
+            // 10.1 Write the details in the readme
+            // 11.1 Cleanup UnitTest and abstraction, and remove duplicates.
+            // 12.0 Review syntax and code coverage manually
         }
 
         private static List<IWebClient> CreateServiceClients(ConfigurationManager configurationManager)
